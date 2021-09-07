@@ -1,21 +1,22 @@
 package br.com.heycristhian.user.controller;
 
 import br.com.heycristhian.user.domain.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import br.com.heycristhian.user.exception.UserNotFoundException;
+import br.com.heycristhian.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/users")
 public class UserController {
 
+    @Autowired
+    private UserService service;
+
     @GetMapping
-    public User findUser() {
-        System.out.println("PASSOU PELO CONTROLLER DE FIND USER");
-        return User.builder()
-                .name("CRISTHIAN")
-                .lastName("DIAS")
-                .city("ASSIS-SP")
-                .build();
+    public User findUser(@RequestParam String name) {
+        System.out.println("PASSOU NO FIND USER " + name);
+        return service.findByName(name)
+                .orElseThrow(UserNotFoundException::new);
     }
 }
